@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ category.title }} | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    <h1>{{ category.title }}</h1>
+    <p>{{ category.description }}</p>
+
+    {% if  request.user.is_staff == True or request.user.is_superuser == True %}
+        <a href="{% url 'delete-category' category.id %}"><img src="/static/img/delete.png" alt="" style="height: 25px"></a>
+        <a href="{% url 'update-category' category.id %}"><img src="/static/img/update.png" alt="" style="height: 25px"></a>
+    {% endif %}
+
+    {% if tasks %}
+        {% for task in tasks %}
+            <div class="alert alert-warning">
+                <a href="{% url 'task-detail' task.id %}">
+                    <div class=" alert-warning mt-2">
+                        <h3>{{ task.title }}</h3>
+                        <p>{{ task.task }}</p>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Ця категорія не містить статей</p>
+        {% if request.user.is_authenticated %}
+
+            <a href="{% url 'create' %}" class="nav-link px-2 link-dark">Бажаєте додати статтю?</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="nav-link px-2 link-dark">Бажаєте додати статтю?</a>
+
+        {% endif %}
+    {% endif %}
+{% endblock %}

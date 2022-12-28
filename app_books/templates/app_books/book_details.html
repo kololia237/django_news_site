@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ book.title }} | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    <style>
+        pre {
+            white-space: pre-wrap;
+            font-family: "Segoe UI", serif;
+            font-size: 16px;
+            margin-bottom: 0;
+        }
+
+        .quote {
+            font-family: "chronicles", serif;
+            text-align: center;
+            padding: 15px;
+
+        }
+
+        .image {
+            background: #0059b2;
+            text-align: center;
+            color: white;
+            margin-bottom: 0;
+            font-family: "Segoe UI", serif;
+            padding: 10px;
+            font-size: 20px;
+        }
+
+        .top {
+            font-family: "chronicles", serif;
+            font-size: 25px;
+        }
+
+        .div {
+            border-radius: 5px;
+        }
+
+        .bor {
+            border: 1px solid #0059b2;
+            box-shadow: 0 0 5px 2px #0059b2;
+
+        }
+
+        .mar {
+            margin-top: 115px;
+        }
+    </style>
+    <div class="container">
+        <div class="row">
+
+
+            <div class="col">
+                <h1>{{ book.title }}</h1>
+                <p>Оформив сторінку: <a href="{% url 'profile' book.creator.id %}">@{{ book.creator }}</a></p>
+                <p>Автор книжки: <a href="{% url 'author-detail' book.book_author.id %}">{{ book.book_author }}</a></p>
+
+
+                <div class="form-control div">
+                    <p class="top">Основна інформація</p>
+                    <pre>{{ book.description }}</pre>
+                </div>
+
+                <div class="form-control div">
+                    <p class="top">Пов'язані статті / Рецензії</p>
+                    <a href="{% url 'connected_book' book.id %}" class="btn btn-outline-dark">Переглянути статті</a>
+                    <a href="{% url 'all_reviews' book.id %}" class="btn btn-outline-dark">Переглянути резензії</a>
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'new_review' book.id %}" class="btn btn-success">Додати свою рецензію</a>
+{% endif %}
+                </div>
+
+
+
+                {% if request.user == book.author or request.user.is_staff == True or request.user.is_superuser == True %}
+                    <div class="form-control div">
+                        <p class="top">Додаткова інформація</p>
+                        <p>Дата створення статті: {{ book.date_created|date:"d-m-Y H:i" }}</p>
+                        <p>Дата останнього редагування статті: {{ book.date_updated|date:"d-m-Y H:i" }}</p>
+                        {#                        <p>Кількість переглядів: {{ book.views_count }}</p>#}
+                        <a href="{% url 'book-delete' book.id %}" class="btn btn-danger">Видалити</a>
+                        <a href="{% url 'book-update' book.id %}" class="btn btn-success">Редагувати</a>
+                    </div>
+                {% endif %}
+
+                {% if book.rate|length != 0 %}
+                    <div>
+                        <p>Оцінка: {{ book.rate }}</p>
+                    </div>
+                {% endif %}
+{% if request.user.is_authenticated %}
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <button type="submit" class="btn-info">Змінити</button>
+                </form>
+{% endif %}
+
+            </div>
+
+
+            <div class="col-md-auto ">
+                <div class="image div">{{ book.img_name }}</div>
+                <img class='bor div' src="{{ book.img.url }}" alt="{{ book.title }} " style="width: 350px">
+            </div>
+
+
+        </div>
+    </div>
+
+
+{% endblock %}

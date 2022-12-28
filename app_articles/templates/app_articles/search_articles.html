@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Статті | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    <h1>Результат пошуку</h1>
+
+
+    {% for article in object_list %}
+        <div class="alert alert-warning">
+            <a href="{% url 'article-detail' article.id %}">
+                <div class=" alert-warning mt-2">
+                    <h3>{{ article.title }}</h3>
+                    <p>{{ article.description }}</p>
+                </div>
+            </a>
+
+            {% if  request.user.id == article.author_article.id or request.user.is_staff == True or request.user.is_superuser == True %}
+                <a href="{% url 'article-delete' article.id %}"><img src="/static/img/delete.png" alt=""
+                                                                     style="height: 25px"></a>
+            {% endif %}
+            {% if  request.user == article.author_article %}
+                <a href="{% url 'article-update' article.id %}"><img src="/static/img/update.png" alt=""
+                                                                     style="height: 25px"></a>
+            {% endif %}
+
+        </div>
+    {% endfor %}
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {{ title }} | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    <form id="signupForm" method="post">
+        {% csrf_token %}
+        {{ form|crispy }}<br>
+        <button type="submit" class="btn-success">Зареєструватися</button>
+    </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#id_username').keyup(function () {
+                $.ajax({
+                    data: $(this).serialize(), // получаяем данные формы
+                    url: "{% url 'ajax-username' %}",
+                    success: function (response) {
+                        if (response.is_taken == true) {
+                            $('#id_username').removeClass('is-valid').addClass('is-invalid');
+                            $('#id_username').after('<div class="invalid-feedback d-block" id="usernameError">Цей логін недоступний!</div>')
+                        } else {
+                            $('#id_username').removeClass('is-invalid').addClass('is-valid');
+                            $('#usernameError').remove();
+
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response.responseJSON.errors)
+                    }
+                });
+                return false;
+            });
+        })
+    </script>
+{% endblock %}

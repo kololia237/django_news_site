@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Інформація про форум | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- Threads  -->
+    {% if request.user.is_authenticated %}
+        <a id="new_topic" class="button" href="{% url 'new-topic' pk %}">Розпочати нове обговорення</a><br><br>
+    {% endif %}
+
+
+    <div id="list">
+        <table border="0" cellpadding="4" width="100%">
+            <tr>
+                <td>Обговорення</td>
+                <td>Відповіді</td>
+                <td>Останній коментар</td>
+                <td></td>
+            </tr>
+
+            {% for topic in topics.object_list %}
+                <tr class="media text-muted pt-3media-body pb-3 mb-0 lh-125 border-bottom ">
+                    <td {% if forloop.last %}class="last"{% endif %}>
+                        <div class="title"><a href="{% url 'topic-detail' topic.pk %}">{{ topic.title }}</a></div>
+                    </td>
+                    <td {% if forloop.last %}class="last"{% endif %}>{{ topic.num_comms }}</td>
+                    <td {% if forloop.last %}class="last"{% endif %}>
+                        {{ topic.last_comment.short|linebreaksbr }}</td>
+                    <td {% if forloop.last %}class="last"{% endif %}>
+                        <a class="button" href="{% url 'topic-detail' topic.pk %}">Детальніше</a><br>
+
+                        {% if  request.user.id == topic.creator_id or request.user.is_staff == True or request.user.is_superuser == True %}
+                            <a href="{% url 'topic-delete' topic.id %}">Видалити</a><br>
+                            <a href="{% url 'topic-update' topic.id %}">Редагувати</a><br>
+                        {% endif %}
+                    </td>
+                </tr>
+
+            {% endfor %}
+        </table>
+    </div>
+
+
+
+
+
+
+
+    <!-- Next/Prev page links  -->
+    {% if topics.object_list and topics.paginator.num_pages > 1 %}
+        <div class="pagination">
+    <span class="step-links">
+        {% if topics.has_previous %}
+            <a href="?page={{ topics.previous_page_number }}">previous &lt;&lt; </a>
+        {% endif %}
+
+        <span class="current">
+            &nbsp;Cторінка {{ topics.number }} з {{ topics.paginator.num_pages }}
+        </span>
+
+        {% if topics.has_next %}
+            <a href="?page={{ topics.next_page_number }}"> &gt;&gt; next</a>
+        {% endif %}
+    </span>
+        </div>
+    {% endif %}
+
+{% endblock %}

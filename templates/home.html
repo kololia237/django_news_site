@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Головна | The Witcher Wiki
+{% endblock %}
+
+{% block style %}
+    <style>
+        .mainpage-header {
+            background: #0059b2;
+            text-align: center;
+            color: white;
+            margin-bottom: 0;
+            font-family: "King Slayer Medium", serif;
+            font-size: 30px;
+            text-transform: uppercase;
+        }
+
+        .mainpage-box {
+            background: white;
+            border: 1px solid #0059b2;
+            vertical-align: middle;
+            align-items: center;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            font-size: 16px;
+            font-family: 'Segoe UI', serif;
+        }
+
+        .video {
+            margin: 0 auto;
+            display: block;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    {% if articles %}
+        <div class="alert mt-2 mainpage-header">Останні додані статті</div>
+        <div class="alert mainpage-box">
+            <div class="container">
+                <div class="row">
+                    {% for article in articles %}
+
+                        <div class="col-sm" style="text-align: center">
+                            <a href="{% url 'category-detail' article.id %}">
+                                <img style="height: 140px" src="{{ article.img.url }}" alt="{{ article.title }}">
+                                <figcaption>{{ article.title }}</figcaption>
+                            </a>
+                        </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if request.user.is_staff == True or request.user.is_superuser == True %}
+        <a href="{% url 'create-category' %}">Додати категорію</a>
+    {% endif %}
+    {% if categories %}
+        <div class="alert mt-2 mainpage-header">Категорії статей</div>
+        <div class="alert mainpage-box">
+            <div class="container">
+                <div class="row">
+                    {% for category in categories %}
+
+                        <div class="col-sm" style="text-align: center">
+                            <a href="{% url 'category-detail' category.id %}">
+                                <img style="height: 140px" src="{{ category.img.url }}" alt="{{ category.title }}">
+                                <figcaption>{{ category.title }}</figcaption>
+                            </a>
+                        </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+
+    {% if books %}
+        <div class="alert mt-2 mainpage-header">Останні додані книжки</div>
+        <div class="alert mainpage-box">
+            <div class="container">
+                <div class="row">
+                    {% for book in books %}
+
+                        <div class="col-sm" style="text-align: center">
+                            <a href="{% url 'book-detail' book.id %}">
+                                <img style="height: 140px" src="{{ book.img.url }}" alt="{{ book.title }}">
+                                <figcaption>{{ book.title }}</figcaption>
+                            </a>
+                        </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+
+    {% if request.user.is_staff == True or request.user.is_superuser == True %}
+        <a href="{% url 'create-genre' %}">Додати жанр</a>
+    {% endif %}
+    {% if genres %}
+        <div class="alert mt-2 mainpage-header">Жанри книжок</div>
+        <div class="alert mainpage-box">
+            <div class="container">
+                <div class="row">
+                    {% for genre in genres %}
+
+                        <div class="col-sm" style="text-align: center">
+                            <a href="{% url 'genre-detail' genre.id %}">
+                                <img style="height: 140px" src="{{ genre.img.url }}" alt="{{ genre.title }}">
+                                <figcaption>{{ genre.title }}</figcaption>
+                            </a>
+                        </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="alert alert-warning mt-2 mainpage-header">Oфіційні відео</div>
+    <div class="alert mainpage-box">
+        <div class="video">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/PaJZeJil81g"
+                    title="YouTube video player"
+                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;
+                    picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+
+{% endblock %}

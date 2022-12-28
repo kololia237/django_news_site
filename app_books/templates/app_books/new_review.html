@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Нова рецензія | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    <form action="{% url 'new_review' book.id %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="btn-success" value="Опублікувати"/>
+    </form>
+{% endblock %}

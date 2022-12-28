@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Профіль {{ user.username }} | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    <script type="text/javascript">
+
+        function linklist(what) {
+            var selectedopt = what.options[what.selectedIndex]
+            if (document.getElementById && selectedopt.getAttribute("target") === "new")
+                window.open(selectedopt.value)
+            else
+                window.location = selectedopt.value
+        }
+    </script>
+
+
+    {% if books_want_to_read %}
+
+        <form name="menu">
+            <label>
+                <select name="sel" onChange="linklist(document.menu.sel)">
+                    <option value="{% url 'want_to_read' request.user.id %}">Новіші (значення за замовчуванням)</option>
+                    <option value="{% url 'want_to_read_old' request.user.id %}">Старіші</option>
+                    <option value="{% url 'want_to_read_title' request.user.id %}">За назвою</option>
+                    <option value="{% url 'want_to_read_book_author' request.user.id %}">За автором</option>
+                    <option value="{% url 'want_to_read_rate' request.user.id %}">За оцінкою</option>
+                </select>
+            </label>
+        </form>
+
+        <h1>Хочу прочитати</h1>
+        {% for book in books_want_to_read %}
+            <div class="alert alert-warning">
+                <a href="{% url 'book-detail' book.id %}">
+                    <div class=" alert-warning mt-2">
+                        <h3>{{ book.title }}</h3>
+                        <p>{{ book.description }}</p>
+                    </div>
+                </a>
+
+                {% if  request.user.id == book.book_author.id or request.user.is_staff == True or request.user.is_superuser == True %}
+                    <a href="{% url 'book-delete' book.id %}"><img src="/static/img/delete.png" alt=""
+                                                                   style="height: 25px"></a>
+                {% endif %}
+                {% if  request.user.id == book.creator.id %}
+                    <a href="{% url 'book-update' book.id %}"><img src="/static/img/update.png" alt=""
+                                                                   style="height: 25px"></a>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>У бд немає записів книжок, які ви хочете прочитати</p>
+    {% endif %}
+
+
+{% endblock %}

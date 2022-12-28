@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ genre.title }} | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    <h1>{{ genre.title }}</h1>
+    <p>{{ genre.description }}</p>
+    <p>
+        {% if  request.user.is_staff == True or request.user.is_superuser == True %}
+            <a href="{% url 'delete-genre' genre.id %}"><img src="/static/img/delete.png" alt=""
+                                                             style="height: 25px"></a>
+            <a href="{% url 'update-genre' genre.id %}"><img src="/static/img/update.png" alt=""
+                                                             style="height: 25px"></a>
+        {% endif %}
+    </p>
+
+    {% if books %}
+        {% for book in books %}
+            <div class="alert alert-warning">
+                <a href="{% url 'book-detail' book.id %}">
+                    <div class=" alert-warning mt-2">
+                        <h3>{{ book.title }}</h3>
+                        <p>{{ book.task }}</p>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Цей жанр не містить статей</p>
+        {% if request.user.is_authenticated %}
+
+            <a href="{% url 'create' %}" class="nav-link px-2 link-dark">Бажаєте додати книгу?</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="nav-link px-2 link-dark">Бажаєте додати книгу?</a>
+
+        {% endif %}
+    {% endif %}
+{% endblock %}

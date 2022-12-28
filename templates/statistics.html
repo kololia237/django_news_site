@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Головна | The Witcher Wiki
+{% endblock %}
+
+{% block style %}
+    <style>
+        .mainpage-header {
+            background: #0059b2;
+            text-align: center;
+            color: white;
+            margin-bottom: 0;
+            font-family: "King Slayer Medium", serif;
+            font-size: 30px;
+            text-transform: uppercase;
+        }
+
+        .mainpage-box {
+            background: white;
+            border: 1px solid #0059b2;
+            vertical-align: middle;
+            align-items: center;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            font-size: 16px;
+            font-family: 'Segoe UI', serif;
+        }
+
+        .video {
+            margin: 0 auto;
+            display: block;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="alert mt-2 mainpage-header">Статистика сайту</div>
+    <div class="alert mainpage-box">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm" style="text-align: center">
+                    <img src="{% static 'img/statistics/books_genres.png' %} " style="width: 450px" alt="">
+                    <img src="{% static 'img/statistics/created updated books.png' %} " style="width: 450px" alt="">
+                    <img src="{% static 'img/statistics/moderators.png' %} " style="width: 450px" alt="">
+                    <img src="{% static 'img/statistics/reviews for books.png' %} " style="width: 450px" alt="">
+                    <img src="{% static 'img/statistics/updated articles.png' %} " style="width: 450px" alt=""></div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

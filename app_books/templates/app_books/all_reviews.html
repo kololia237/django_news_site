@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Рецензії | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+
+    <a href="{% url 'new_review' book.id %}" >Додати свою рецензію</a>
+
+    {% if reviews %}
+        {% for review in reviews %}
+            <div class="alert alert-warning">
+                <a href="{% url 'reviews' review.id %}">
+                    <div class=" alert-warning mt-2">
+                        <h3>{{ review.title }}</h3>
+
+                    </div>
+                </a>
+
+                {% if  request.user.id == review.creator.id or request.user.is_staff == True or request.user.is_superuser == True %}
+                    <a href="{% url 'review-delete' review.id %}"><img src="/static/img/delete.png" alt=""
+                                                                       style="height: 25px"></a>
+                {% endif %}
+                {% if  request.user.id == review.creator.id %}
+                    <a href="{% url 'review-update' review.id %}"><img src="/static/img/update.png" alt=""
+                                                                       style="height: 25px"></a>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>У бд немає записів</p>
+    {% endif %}
+
+
+
+
+    <!-- Next/Prev page links  -->
+    {% if reviews.object_list and reviews.paginator.num_pages > 1 %}
+        <div class="pagination">
+        <span class="step-links">
+            {% if reviews.has_previous %}
+                <a href="?page={{ reviews.previous_page_number }}">previous &lt;&lt; </a>
+            {% endif %}
+
+            <span class="current">
+                &nbsp;Сторінка {{ reviews.number }} з {{ reviews.paginator.num_pages }}
+            </span>
+
+            {% if reviews.has_next %}
+                <a href="?page={{ reviews.next_page_number }}"> &gt;&gt; next</a>
+            {% endif %}
+        </span>
+        </div>
+    {% endif %}
+
+
+{% endblock %}
+

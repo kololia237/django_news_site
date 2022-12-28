@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Авторизація користувача | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    <h1>Вхід в систему</h1>
+    <form method="post">
+
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-success">Увійти</button>
+        <p><a href="{% url "reset_password" %}">Забули пароль?</a></p>
+        <span><{{ form_r.error }}/span>
+
+    </form>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#id_username').keyup(function () {
+                $.ajax({
+                    data: $(this).serialize(), // получаяем данные формы
+                    url: "{% url 'ajax-username' %}",
+                    success: function (response) {
+                        if (response.is_taken == false) {
+                            $('#id_username').removeClass('is-valid').addClass('is-invalid');
+
+                        } else {
+                            $('#id_username').removeClass('is-invalid').addClass('is-valid');
+                            $('#usernameError').remove();
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response.responseJSON.errors)
+                    }
+                });
+                return false;
+            });
+        })
+    </script>
+{% endblock %}

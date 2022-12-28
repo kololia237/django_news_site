@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Статті | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    <h1>Search Results</h1>
+
+
+    {% for task in object_list %}
+        <div class="alert alert-warning">
+            <a href="{% url 'task-detail' task.id %}">
+                <div class=" alert-warning mt-2">
+                    <h3>{{ task.title }}</h3>
+                    <p>{{ task.task }}</p>
+                </div>
+            </a>
+
+            {#            {% if  request.user.id == desc.author.id or request.user.is_staff == True or request.user.is_superuser == True %}#}
+            {#                <a href="{% url 'desc-delete' desc.id %}"><img src="/static/img/delete.png" alt="" style="height: 25px"></a>#}
+            {#            {% endif %}#}
+            {#            {% if  request.user.id == desc.author.id %}#}
+            {#                <a href="{% url 'desc-update' desc.id %}"><img src="/static/img/update.png" alt="" style="height: 25px"></a>#}
+            {#            {% endif %}#}
+
+        </div>
+    {% endfor %}
+
+{% endblock %}

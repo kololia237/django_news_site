@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Книги | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+
+    <script type="text/javascript">
+
+        function linklist(what) {
+            var selectedopt = what.options[what.selectedIndex]
+            if (document.getElementById && selectedopt.getAttribute("target") === "new")
+                window.open(selectedopt.value)
+            else
+                window.location = selectedopt.value
+        }
+    </script>
+
+    <a href="{% url 'add-book' %}"><p>Додати книжку</p></a>
+    {% if books %}
+
+        <form name="menu">
+            <label>
+                <select name="sel" onChange="linklist(document.menu.sel)">
+                    <option value="{% url 'books' %}">Новіші (значення за замовчуванням)</option>
+                    <option value="{% url 'books_old' %}">Старіші</option>
+                    <option value="{% url 'books_title' %}">За назвою</option>
+                    <option value="{% url 'books_book_author' %}">За автором</option>
+                    <option value="{% url 'books_rate' %}">За оцінкою</option>
+                </select>
+            </label>
+        </form>
+        <br>
+
+        {% for book in books %}
+            <div class="alert alert-warning">
+                <a href="{% url 'book-detail' book.id %}">
+                    <div class=" alert-warning mt-2">
+                        <h3>{{ book.title }}</h3>
+                        {{ book.book_author }}<br>
+                        {% if book.rate|length != 0 %}
+                            Оцінка: {{ book.rate }}<br>
+                        {% endif %}
+                        Дата створення: {{ book.date_created }}
+
+
+                    </div>
+                </a>
+
+                {% if  request.user.id == book.author_book.id or request.user.is_staff == True or request.user.is_superuser == True %}
+                    <a href="{% url 'book-delete' book.id %}"><img src="/static/img/delete.png" alt=""
+                                                                   style="height: 25px"></a>
+
+                    <a href="{% url 'book-update' book.id %}"><img src="/static/img/update.png" alt=""
+                                                                   style="height: 25px"></a>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>У бд немає записів</p>
+    {% endif %}
+
+
+
+
+    <!-- Next/Prev page links  -->
+    {% if books.object_list and books.paginator.num_pages > 1 %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if books.has_previous %}
+                <a href= "?page={{ books.previous_page_number }}">previous &lt;&lt; </a>
+            {% endif %}
+
+            <span class="current">
+                &nbsp;Сторінка {{ books.number }} з {{ books.paginator.num_pages }}
+            </span>
+
+            {% if books.has_next %}
+                <a href="?page={{ books.next_page_number }}"> &gt;&gt; next</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+
+
+{% endblock %}
+

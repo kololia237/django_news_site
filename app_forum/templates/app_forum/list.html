@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Форум | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    {% if  request.user.is_staff == True or request.user.is_superuser == True %}
+        <a id="forum" class="button" href="{% url 'new-forum' %}">Додати форум</a>
+    {% endif %}
+    <!-- Forums  -->
+    <div id="list" class="media pt-3">
+        <table border="0" cellpadding="4" width="100%">
+            <tr>
+                <td></td>
+                <td>Коментарі</td>
+                <td>Останній коментар</td>
+                <td></td>
+            </tr>
+
+            {% for forum in forums %}
+                <tr class="media text-muted pt-3media-body pb-3 mb-0 lh-125 border-bottom border-gray">
+                    <td {% if forloop.last %}class="last"{% endif %}>
+                        <div class="title"><a href="{% url 'forum-detail' forum.pk %}">{{ forum.title }}</a></div>
+                    </td>
+                    <td {% if forloop.last %}class="last"{% endif %}>{{ forum.num_comments }}</td>
+                    <td {% if forloop.last %}class="last"{% endif %}>
+                        {{ forum.last_comment.short|linebreaksbr }}</td>
+                    <td {% if forloop.last %}class="last"{% endif %}>
+                        <a class="button" href="{% url 'forum-detail' forum.pk %}">Детальніше</a><br>
+
+                        {% if request.user.is_superuser == True %}
+                            <a href="{% url 'forum-delete' forum.pk %}">Видалити</a><br>
+                            <a href="{% url 'forum-update' forum.pk %}">Редагувати</a><br>
+                        {% endif %}
+
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+
+{% endblock %}

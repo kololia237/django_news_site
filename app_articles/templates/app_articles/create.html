@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title }} | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    <h1>Редагування</h1>
+    <form enctype="multipart/form-data" method="post">
+
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-success">Додати</button>
+        <span><{{ error }}/span>
+    </form>
+{% endblock %}

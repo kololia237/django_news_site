@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Зміна пароля | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    {#    <h1>block_reg</h1>#}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn-success">Змінити</button>
+        <span><{{ form_r.error }}/span>
+
+    </form>
+{% endblock %}

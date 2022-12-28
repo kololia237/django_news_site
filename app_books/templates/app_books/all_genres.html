@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Жанри | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+
+    {% if genres %}
+        {% for genre in genres %}
+            <div class="alert alert-warning">
+            <a href="{% url 'genre-detail' genre.id %}">
+                    <div class=" alert-warning mt-2">
+                        <h3>{{ genre.title }}</h3>
+
+                    </div>
+                </a>
+
+                 {% if  request.user.is_staff == True or request.user.is_superuser == True %}
+        <a href="{% url 'delete-genre' genre.id %}"><img src="/static/img/delete.png" alt="" style="height: 25px"></a>
+        <a href="{% url 'update-genre' genre.id %}"><img src="/static/img/update.png" alt="" style="height: 25px"></a>
+    {% endif %}
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>У бд немає записів</p>
+    {% endif %}
+
+
+
+
+    <!-- Next/Prev page links  -->
+    {% if genres.object_list and genres.paginator.num_pages > 1 %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if genres.has_previous %}
+                <a href= "?page={{ genres.previous_page_number }}">previous &lt;&lt; </a>
+            {% endif %}
+
+            <span class="current">
+                &nbsp;Сторінка {{ genres.number }} з {{ genres.paginator.num_pages }}
+            </span>
+
+            {% if genres.has_next %}
+                <a href="?page={{ genres.next_page_number }}"> &gt;&gt; next</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+
+
+{% endblock %}
+

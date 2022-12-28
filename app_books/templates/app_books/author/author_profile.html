@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ author.name }} {{ author.surname }} | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    <style>
+        pre {
+            white-space: pre-wrap;
+            font-family: "Segoe UI", serif;
+            font-size: 16px;
+            margin-bottom: 0;
+        }
+
+        .quote {
+            font-family: "chronicles", serif;
+            text-align: center;
+            padding: 15px;
+
+        }
+
+        .image {
+            background: #0059b2;
+            text-align: center;
+            color: white;
+            margin-bottom: 0;
+            font-family: "Segoe UI", serif;
+            padding: 10px;
+            font-size: 20px;
+        }
+
+        .top {
+            font-family: "chronicles", serif;
+            font-size: 25px;
+        }
+
+        .div {
+            border-radius: 5px;
+        }
+
+        .bor {
+            border: 1px solid #0059b2;
+            box-shadow: 0 0 5px 2px #0059b2;
+
+        }
+
+        .mar {
+            margin-top: 115px;
+        }
+    </style>
+    <div class="container">
+        <div class="row">
+
+
+            <div class="col">
+                <h1>{{ author.name }} {{ author.surname }}</h1>
+
+                {% if author.biography|length != 0 %}
+                    <div class="form-control div">
+                        <p class="top">Біографія</p>
+                        <pre>{{ author.biography }}</pre>
+                    </div>
+                {% endif %}
+
+                <p>{% if  request.user.id == author.creator.id or request.user.is_staff == True or request.user.is_superuser == True %}
+                    <a href="{% url 'author-delete' author.creator.id %}"><img src="/static/img/delete.png" alt=""
+                                                                       style="height: 25px"></a>
+                {% endif %}
+                {% if  request.user.id == author.creator.id %}
+                    <a href="{% url 'author-update' author.id %}"><img src="/static/img/update.png" alt=""
+                                                                       style="height: 25px"></a>
+
+                {% endif %}</p>
+
+
+                {% if books %}
+                    {% for book in books %}
+                        <div class="alert alert-warning">
+                            <a href="{% url 'book-detail' book.id %}">
+                                <div class=" alert-warning mt-2">
+                                    <h3>{{ book.title }}</h3>
+                                    <p>{{ book.description }}</p>
+                                </div>
+                            </a>
+
+                            {% if  request.user.id == book.book_author.id or request.user.is_staff == True or request.user.is_superuser == True %}
+                                <a href="{% url 'book-delete' book.id %}"><img src="/static/img/delete.png" alt=""
+                                                                               style="height: 25px"></a>
+                            {% endif %}
+                            {% if  request.user.id == book.book_author.id %}
+                                <a href="{% url 'book-update' book.id %}"><img src="/static/img/update.png" alt=""
+                                                                               style="height: 25px"></a>
+                            {% endif %}
+
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>У бд немає записів книжок цього автора</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

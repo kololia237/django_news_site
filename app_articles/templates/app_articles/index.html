@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Статті | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+
+    {% if articles %}
+        {% for article in articles %}
+            <div class="alert alert-warning">
+                <a href="{% url 'article-detail' article.id %}">
+                    <div class=" alert-warning mt-2">
+                        <h3>{{ article.title }}</h3>
+
+                    </div>
+                </a>
+
+                {% if  request.user.id == article.author_article.id or request.user.is_staff == True or request.user.is_superuser == True %}
+                    <a href="{% url 'article-delete' article.id %}"><img src="/static/img/delete.png" alt=""
+                                                                         style="height: 25px"></a>
+                {% endif %}
+                {% if  request.user.id == article.author_article.id %}
+                    <a href="{% url 'article-update' article.id %}"><img src="/static/img/update.png" alt=""
+                                                                         style="height: 25px"></a>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>У бд немає записів</p>
+    {% endif %}
+
+
+
+
+    <!-- Next/Prev page links  -->
+    {#{% if tasks.object_list and tasks.paginator.num_pages > 1 %}#}
+    {#<div class="pagination">#}
+    {#    <span class="step-links">#}
+    {#        {% if tasks.has_previous %}#}
+    {#            <a href= "?page={{ tasks.previous_page_number }}">previous &lt;&lt; </a>#}
+    {#        {% endif %}#}
+    {##}
+    {#        <span class="current">#}
+    {#            &nbsp;Сторінка {{ tasks.number }} з {{ tasks.paginator.num_pages }}#}
+    {#        </span>#}
+    {##}
+    {#        {% if tasks.has_next %}#}
+    {#            <a href="?page={{ tasks.next_page_number }}"> &gt;&gt; next</a>#}
+    {#        {% endif %}#}
+    {#    </span>#}
+    {#</div>#}
+    {#{% endif %}#}
+
+
+{% endblock %}
+

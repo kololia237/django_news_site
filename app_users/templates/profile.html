@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Профіль {{ user.username }} | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+
+    <h1>{{ user.username }}</h1>
+    <p>Дата останнього входу на сайт: {{ user.last_login|date:"d-m-Y H:i" }}</p>
+    <p>Дата реєстрації: {{ user.date_joined }}</p>
+
+    {% if request.user.id == user.id or request.user.is_staff == True or request.user.is_superuser == True %}
+        <p>Електронна скринька: {{ user.email }}</p>
+    {% endif %}
+    <p>Статус користувача:
+        {% if request.user.is_active == True %} Активний
+        {% else %} Користувача видалено
+        {% endif %}
+    </p>
+
+
+    <p>Статус модератора:
+        {% if user.is_staff == True %} Так
+        {% else %} Ні
+        {% endif %}
+    </p>
+
+
+    <p>Статус адміністратора:
+        {% if user.is_superuser == True %} Так
+        {% else %} Ні
+        {% endif %}
+    </p>
+    {% if request.user.is_staff == True or request.user.is_superuser == True %}
+        <a href="{% url 'status-update' user.id %}" class="btn btn-danger">Status</a>
+    {% endif %}
+
+
+    {% if request.user.id == user.id %}
+        <a href="{% url 'change-pass' user.id %}" class="btn btn-success">Змінити пароль</a>
+
+        <a href="{% url 'profile-update' user.id %}" class="btn btn-info">Редагувати</a><p></p>
+{#        <a href="{% url 'profile_statistics' user.id %}" class="btn btn-warning">Статистика</a>#}
+    {% endif %}
+
+
+
+
+
+    {% if articles %}
+        {% for article in articles %}
+            <div class="alert alert-warning">
+                <a href="{% url 'article-detail' article.id %}">
+                    <div class=" alert-warning mt-2">
+                        <h3>{{ article.title }}</h3>
+                        <p>{{ article.description }}</p>
+                    </div>
+                </a>
+
+                {% if  request.user.id == article.author_article.id or request.user.is_staff == True or request.user.is_superuser == True %}
+                    <a href="{% url 'article-delete' article.id %}"><img src="/static/img/delete.png" alt=""
+                                                                         style="height: 25px"></a>
+                {% endif %}
+                {% if  request.user.id == article.author_article.id %}
+                    <a href="{% url 'article-update' article.id %}"><img src="/static/img/update.png" alt=""
+                                                                         style="height: 25px"></a>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>У бд немає записів ваших статтей</p>
+    {% endif %}
+
+
+    {% if books_read_now %}
+        <a href="{% url 'read_now' request.user.id %}"><h1>Читаю зараз - {{ books_read_now_count }}</h1></a>
+        {% for book in books_read_now %}
+            <div class="alert alert-warning">
+                <a href="{% url 'book-detail' book.id %}">
+                    <div class=" alert-warning mt-2">
+                        <img src="{{ book.img.url }}" alt="{{ book.title }} " style="height: 100px">
+
+                        <h3>{{ book.title }}</h3>
+                        <p>{{ book.book_author }}</p>
+                    </div>
+                </a>
+
+                {% if  request.user.id == book.book_author.id or request.user.is_staff == True or request.user.is_superuser == True %}
+                    <a href="{% url 'book-delete' book.id %}"><img src="/static/img/delete.png" alt=""
+                                                                   style="height: 25px"></a>
+                {% endif %}
+                {% if  request.user.id == book.book_author.id or request.user.id == book.creator.id %}
+                    <a href="{% url 'book-update' book.id %}"><img src="/static/img/update.png" alt=""
+                                                                   style="height: 25px"></a>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>У бд немає записів книжок, які ви читаєте зараз</p>
+    {% endif %}
+
+    {% if books_want_to_read %}
+        <a href="{% url 'want_to_read' request.user.id %}"><h1>Хочу прочитати - {{ books_want_to_read_count }}</h1></a>
+        {% for book in books_want_to_read %}
+            <div class="alert alert-warning">
+                <a href="{% url 'book-detail' book.id %}">
+                    <div class=" alert-warning mt-2">
+                        <img src="{{ book.img.url }}" alt="{{ book.title }} " style="height: 100px">
+
+                        <h3>{{ book.title }}</h3>
+                        <p>{{ book.book_author }}</p>
+                    </div>
+                </a>
+
+                {% if  request.user == book.book_author or request.user.is_staff == True or request.user.is_superuser == True %}
+                    <a href="{% url 'book-delete' book.id %}"><img src="/static/img/delete.png" alt=""
+                                                                   style="height: 25px"></a>
+                {% endif %}
+                {% if  request.user == book.book_author or request.user.id == book.creator.id %}
+                    <a href="{% url 'book-update' book.id %}"><img src="/static/img/update.png" alt=""
+                                                                   style="height: 25px"></a>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>У бд немає записів книжок, які ви хочете прочитати</p>
+    {% endif %}
+
+    {% if read_books %}
+        <a href="{% url 'read_books' request.user.id %}"><h1>Прочитано - {{ read_books_count }}</h1></a>
+        {% for book in read_books %}
+            <div class="alert alert-warning">
+                <a href="{% url 'book-detail' book.id %}">
+                    <div class=" alert-warning mt-2">
+                        <img src="{{ book.img.url }}" alt="{{ book.title }} " style="height: 100px">
+
+                        <h3>{{ book.title }}</h3>
+                        <p>{{ book.book_author }}</p>
+                    </div>
+                </a>
+
+                {% if  request.user == book.book_author or request.user.is_staff == True or request.user.is_superuser == True %}
+                    <a href="{% url 'book-delete' book.id %}"><img src="/static/img/delete.png" alt=""
+                                                                   style="height: 25px"></a>
+                {% endif %}
+                {% if  request.user == book.book_author or request.user.id == book.creator.id %}
+                    <a href="{% url 'book-update' book.id %}"><img src="/static/img/update.png" alt=""
+                                                                   style="height: 25px"></a>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>У бд немає записів книжок, які ви прочитали</p>
+    {% endif %}
+
+
+    {% if top_5_read_books %}
+        <a href="{% url 'read_books_rate' request.user.id %}"><h1>Ваш топ-5 книжок</h1></a>
+        {% for book in top_5_read_books %}
+            <div class="alert alert-warning">
+                <a href="{% url 'book-detail' book.id %}">
+                    <div class=" alert-warning mt-2">
+                        <img src="{{ book.img.url }}" alt="{{ book.title }} " style="height: 100px">
+
+                        <h3>{{ book.title }}</h3>
+                        <p>{{ book.book_author }}</p>
+                    </div>
+                </a>
+
+                {% if  request.user == book.book_author or request.user.is_staff == True or request.user.is_superuser == True %}
+                    <a href="{% url 'book-delete' book.id %}"><img src="/static/img/delete.png" alt=""
+                                                                   style="height: 25px"></a>
+                {% endif %}
+                {% if  request.user == book.book_author or request.user.id == book.creator.id %}
+                    <a href="{% url 'book-update' book.id %}"><img src="/static/img/update.png" alt=""
+                                                                   style="height: 25px"></a>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>У бд немає записів книжок, які ви прочитали</p>
+    {% endif %}
+
+
+
+
+
+    <!-- Next/Prev page links  -->
+    {% if articles.object_list and articles.paginator.num_pages > 1 %}
+        <div class="pagination">
+    <span class="step-links">
+        {% if articles.has_previous %}
+            <a href="?page={{ articles.previous_page_number }}">previous &lt;&lt; </a>
+        {% endif %}
+
+        <span class="current">
+            &nbsp;Сторінка {{ articles.number }} з {{ articles.paginator.num_pages }}
+        </span>
+
+        {% if articles.has_next %}
+            <a href="?page={{ articles.next_page_number }}"> &gt;&gt; next</a>
+        {% endif %}
+    </span>
+        </div>
+    {% endif %}
+{% endblock %}

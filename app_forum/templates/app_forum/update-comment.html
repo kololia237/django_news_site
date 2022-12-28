@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Редагувати коментар | The Witcher Wiki
+{% endblock %}
+
+
+{% block content %}
+    <form method="post">
+
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-success">Редагувати</button>
+    </form>
+{% endblock %}
